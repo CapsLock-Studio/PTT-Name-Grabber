@@ -3,6 +3,7 @@ import sys
 import os
 import requests
 import re
+import collections
 from pyquery import PyQuery as pq
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -54,6 +55,7 @@ def query(board, regex, from_page, to_page):
     max_count = 0
     print 'result_count:', len(result)
     print 'result:', result
+    users = collections.OrderedDict(sorted(users.items()))
     for user, count in users.items():
         print 'user:', user, ', count: ', count
         message_count += count
