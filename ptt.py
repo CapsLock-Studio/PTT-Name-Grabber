@@ -21,10 +21,11 @@ def content_parser(content, regex):
         author = author.strip()
         result.append(author)
     pusher = tree('.push .push-userid')
+    comment = tree('.push .push-content')
     for user in pusher.items():
         if comment_regex == '':
             result.append(user.text())
-        elif re.search(regex.decode('utf-8'), user.text()):
+        elif re.search(regex.decode('utf-8'), comment.text()):
             result.append(user.text())
     return result
 
