@@ -12,20 +12,24 @@ index = 'https://www.ptt.cc/'
 base_path = index + 'bbs/%s/index%s.html'
 
 
-def content_parser(content):
+def content_parser(content, regex):
     result = []
     tree = pq(content)
-    author = tree('.article-metaline .article-meta-value').eq(0).text()
-    author = re.sub(r'\(.+\)', '', author)
-    author = author.strip()
-    result.append(author)
+    if regex == '':
+        author = tree('.article-metaline .article-meta-value').eq(0).text()
+        author = re.sub(r'\(.+\)', '', author)
+        author = author.strip()
+        result.append(author)
     pusher = tree('.push .push-userid')
     for user in pusher.items():
-        result.append(user.text())
+        if comment_regex == '':
+            result.append(user.text())
+        elif re.search(regex.decode('utf-8'), user.text()):
+            result.append(user.text())
     return result
 
 
-def query(board, regex, from_page, to_page):
+def query(board, regex, from_page, to_page, comment_regex):
     result = []
     users = {}
     from_page = int(from_page)
@@ -40,7 +44,7 @@ def query(board, regex, from_page, to_page):
                 title = ele.text().strip()
                 if re.search(regex.decode('utf-8'), title, re.UNICODE):
                     url = ele.attr('href')
-                    ids = content_parser(requests.get(index + url).text)
+                    ids = content_parser(requests.get(index + url).text, comment_regex)
                     for data in ids:
                         try:
                             users[data] += 1
@@ -69,6 +73,11 @@ def query(board, regex, from_page, to_page):
 
 if __name__ == '__main__':
     if len(sys.argv) >= 4:
-        query(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+        comment_regex = ''
+        try:
+            comment_regex = sys.argv[5]
+        except Exception:
+            comment_regex = ''
+        query(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], comment_regex)
     else:
         print 'Usage: %s [board] [regex] [from_page] [to_page]' % os.path.abspath(__file__)
