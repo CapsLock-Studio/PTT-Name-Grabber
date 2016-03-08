@@ -15,6 +15,8 @@ def content_parser(content):
     result = []
     tree = pq(content)
     author = tree('.article-metaline .article-meta-value').eq(0).text()
+    author = re.sub(r'\(.+\)', '', author)
+    author = author.strip()
     result.append(author)
     pusher = tree('.push .push-userid')
     for user in pusher.items():
@@ -24,6 +26,7 @@ def content_parser(content):
 
 def query(board, regex, from_page, to_page):
     result = []
+    users = {}
     from_page = int(from_page)
     to_page = int(to_page)
     for page in range(from_page, to_page + 1):
@@ -38,11 +41,28 @@ def query(board, regex, from_page, to_page):
                     url = ele.attr('href')
                     ids = content_parser(requests.get(index + url).text)
                     for data in ids:
+                        try:
+                            users[data] += 1
+                        except Exception:
+                            users[data] = 1
                         if data not in result:
                             result.append(data)
         else:
             continue
-    print result
+    message_count = 0
+    max_user = ''
+    max_count = 0
+    print 'result_count:', len(result)
+    print 'result:', result
+    for user, count in users.items():
+        print 'user:', user, ', count: ', count
+        message_count += count
+        if count > max_count:
+            max_count = count
+            max_user = user
+    print 'message_count: ', message_count
+    print 'max_count: ', max_count
+    print 'max_user: ', max_user
 
 
 if __name__ == '__main__':
