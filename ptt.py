@@ -60,7 +60,7 @@ def query(board, regex, from_page, to_page, comment_regex):
     max_count = 0
     print 'result_count:', len(result)
     print 'result:', result
-    users = collections.OrderedDict(sorted(users.items()))
+    users = collections.OrderedDict(sorted(users.items(), key=lambda x: x[1], reverse=True))
     for user, count in users.items():
         print 'user:', user, ', count: ', count
         message_count += count
