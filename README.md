@@ -7,7 +7,7 @@ PTT-Name-Grabber
 python ptt.py [board] [regex] [from] [to]
 ```
 
-或是
+or use it to get pusher
 
 ```
 python ptt.py [board] [regex] [from] [to] [comment_regex]
