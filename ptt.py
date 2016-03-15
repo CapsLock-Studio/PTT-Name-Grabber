@@ -58,8 +58,6 @@ def query(board, regex, from_page, to_page, comment_regex):
     message_count = 0
     max_user = ''
     max_count = 0
-    print 'result_count:', len(result)
-    print 'result:', result
     users = collections.OrderedDict(sorted(users.items(), key=lambda x: x[1], reverse=True))
     for user, count in users.items():
         print 'user:', user, ', count: ', count
@@ -67,6 +65,8 @@ def query(board, regex, from_page, to_page, comment_regex):
         if count > max_count:
             max_count = count
             max_user = user
+    print 'result_count:', len(result)
+    print 'result:', result
     print 'message_count: ', message_count
     print 'max_count: ', max_count
     print 'max_user: ', max_user
@@ -74,7 +74,6 @@ def query(board, regex, from_page, to_page, comment_regex):
 
 if __name__ == '__main__':
     if len(sys.argv) >= 4:
-        comment_regex = ''
         try:
             comment_regex = sys.argv[5]
         except Exception:
